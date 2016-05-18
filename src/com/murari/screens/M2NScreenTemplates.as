@@ -1,6 +1,7 @@
 package com.murari.screens
 {
 	import com.murari.interfaces.IM2NScreen;
+	import com.murari.service.M2NServiceManager;
 	
 	import feathers.controls.Button;
 	import feathers.controls.Screen;
@@ -35,12 +36,14 @@ package com.murari.screens
 		
 		private function _loadData():void
 		{
-			
+			M2NServiceManager.executeService(M2NServiceManager.SERVICE_TEMPLATE);	
 		}
 		
 		private function _onButtonTriggered(event:Event):void
 		{
 			trace ("Button Triggered");
+			
+			
 		}
 	}
 }
