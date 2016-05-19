@@ -1,12 +1,12 @@
 package com.murari.theme
 {
-	import feathers.themes.MetalWorksMobileTheme;
+	import feathers.themes.AeonDesktopTheme;
 	
-	public class M2NApplicationTheme extends MetalWorksMobileTheme
+	public class M2NApplicationTheme extends AeonDesktopTheme
 	{
-		public function M2NApplicationTheme(scaleToDPI:Boolean=true)
+		public function M2NApplicationTheme()
 		{
-			super(scaleToDPI);
+			super();
 		}
 	}
 }

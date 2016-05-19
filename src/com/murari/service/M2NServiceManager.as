@@ -7,6 +7,7 @@ package com.murari.service
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 	
 	import feathers.controls.Alert;
 	import feathers.data.ListCollection;
@@ -17,8 +18,8 @@ package com.murari.service
 	{
 		private static const SERVICE_URL:String = "http://localhost:81/m/mcc/services/v1/";
 		
-		public static const SERVICE_TEMPLATE:String = GET_SERVICE_URL("template");
-		public static const SERVICE_THEME:String = GET_SERVICE_URL("theme");
+		public static const SERVICE_GET_TEMPLATE:String = GET_SERVICE_URL("get_template");
+		public static const SERVICE_GET_THEME:String = GET_SERVICE_URL("get_theme");
 		
 		private static function GET_SERVICE_URL(argServiceName:String):String { return SERVICE_URL + argServiceName; }
 		
@@ -26,6 +27,7 @@ package com.murari.service
 		private static var _servicePath:String;
 		private static var _request:URLRequest;
 		private static var _loader:URLLoader;
+		public static var requestVariables:Array;
 		
 		public static function executeService(__servicePath:String, __object:Object = null):void
 		{
@@ -33,13 +35,15 @@ package com.murari.service
 			_request = new URLRequest(__servicePath);
 			_request.method = URLRequestMethod.POST;
 			//_request.contentType = "application/json";
-			var _requestHeader:URLRequestHeader = new URLRequestHeader("authorization", "Basic dde9ae0028ffa09742613dc013a65154");
-			//var _requestHeader:URLRequestHeader = new URLRequestHeader("authorization", "dde9ae0028ffa09742613dc013a65154");
+			//_request.requestHeaders = new Array(_requestHeader);
+			__object = new URLVariables(requestVariables.join(','));
+			if (__object)			_request.data = __object;
+			
+			//trace (_request.data);
+			
+			//var _requestHeader:URLRequestHeader = new URLRequestHeader("authorization", "Basic dde9ae0028ffa09742613dc013a65154");
+			var _requestHeader:URLRequestHeader = new URLRequestHeader("Authorization", "dde9ae0028ffa09742613dc013a65154");
 			_request.requestHeaders.push(_requestHeader);
-			
-			if (__object)			_request.data = JSON.stringify(__object);
-			
-			trace (_request.data);
 			
 			_loader = new URLLoader();
 			_loader.addEventListener(flash.events.Event.COMPLETE, _dataLoadedCompleteHandler);
@@ -53,10 +57,9 @@ package com.murari.service
 		private static function _dataLoadedCompleteHandler(event:flash.events.Event):void
 		{
 			//M2NCommonFunctions.hideMessage();
-			
+			//trace (event.target.data);
 			var __jsonData:Object = JSON.parse(event.target.data);
-			///trace (__jsonData);
-			if (__jsonData.status == false)
+			if (__jsonData.error == true)
 			{
 				//M2NActionsTracer.showErrorAlert(new M2NError("Data Fetching Error", _servicePath + ". \n" + __jsonData.message));
 				return;
@@ -67,7 +70,7 @@ package com.murari.service
 		private static function _ioErrorHandler(event:IOErrorEvent):void
 		{
 			//M2NCommonFunctions.hideMessage();
-			
+			trace (event.currentTarget.data);
 			switch(event.errorID)
 			{
 				case 2032:
